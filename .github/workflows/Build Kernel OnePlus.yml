@@ -522,6 +522,17 @@ jobs:
             sed -i 's/if check_defconfig == None:/if False:  # check_defconfig == None:/' kernel_platform/build/kernel/kleaf/common_kernels.bzl
           fi
 
+      - name: Apply Screen Flickering Fix
+        run: |
+          cd kernel_workspace/kernel_platform/common
+          PATCH_SRC="${GITHUB_WORKSPACE}/kernel_workspace/Action-Build/patches/Fix_Screen_Flickering.patch"
+          if [ ! -f "$PATCH_SRC" ]; then
+            echo "::error::补丁文件不存在: $PATCH_SRC"
+            exit 1
+          fi
+          patch -p1 -F 3 < "$PATCH_SRC"
+          echo "✅ 屏幕闪烁修复补丁应用完成"
+
       - name: Kernel Version Handling
         run: |
           cd kernel_workspace/kernel_platform
